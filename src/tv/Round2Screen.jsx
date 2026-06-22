@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { db } from '../firebase';
+import { db, storage } from '../firebase'; // 🟢 Added storage import
 import { collection, getDocs } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage'; // 🟢 Added Firebase Storage methods
 import AssignPlayerRound2 from "./AssignPlayerRound2";
 
 const Round2Screen = ({ onNavigate }) => {
   const [players, setPlayers] = useState([]);
+  const [imageUrls, setImageUrls] = useState({}); // 🟢 Store pre-fetched download URLs
   const [eliminatedPlayers, setEliminatedPlayers] = useState([]);
 
-  // 🔄 Fetch all players from Firestore when the screen loads
+  // 🔄 Fetch players and pre-fetch all images from Firebase Storage concurrently
   useEffect(() => {
-    const fetchPlayers = async () => {
+    const fetchPlayersAndImages = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'users'));
         const playerList = querySnapshot.docs
@@ -20,12 +22,36 @@ const Round2Screen = ({ onNavigate }) => {
           .filter(player => player.id !== '07032003'); // Exclude host from grid
 
         setPlayers(playerList);
+
+        // ⚡️ Map through players and prefetch both Alive and Eliminated URLs simultaneously
+        const urlMap = {};
+        await Promise.all(
+          playerList.map(async (player) => {
+            // Get Alive Photo URL
+            try {
+              const aliveRef = ref(storage, `${player.id}.jpeg`);
+              urlMap[player.id] = await getDownloadURL(aliveRef);
+            } catch (err) {
+              urlMap[player.id] = 'https://via.placeholder.com/150'; // Fallback
+            }
+
+            // Get Eliminated Photo URL
+            try {
+              const elimRef = ref(storage, `${player.id}-eliminated.jpeg`);
+              urlMap[`${player.id}-eliminated`] = await getDownloadURL(elimRef);
+            } catch (err) {
+              urlMap[`${player.id}-eliminated`] = 'https://via.placeholder.com/150'; // Fallback
+            }
+          })
+        );
+        setImageUrls(urlMap);
+
       } catch (error) {
-        console.error("Error fetching players for grid:", error);
+        console.error("Error fetching players or cloud assets for grid:", error);
       }
     };
 
-    fetchPlayers();
+    fetchPlayersAndImages();
   }, []);
 
   // 🎯 Toggles a player's ID in or out of the eliminated list
@@ -63,10 +89,9 @@ const Round2Screen = ({ onNavigate }) => {
           {players.map((player) => {
             const isEliminated = eliminatedPlayers.includes(player.id);
             
-            // 🖼️ Dynamically switch filename string based on elimination flag status
-            const imageFileName = isEliminated 
-              ? `${player.id}-eliminated.jpeg` 
-              : `${player.id}.jpeg`;
+            // 🖼️ Select the correct lookup key depending on state
+            const imageKey = isEliminated ? `${player.id}-eliminated` : player.id;
+            const finalImageUrl = imageUrls[imageKey] || 'https://via.placeholder.com/100';
 
             return (
               <div 
@@ -82,8 +107,9 @@ const Round2Screen = ({ onNavigate }) => {
                   opacity: isEliminated ? 0.65 : 1
                 }}
               >
+                {/* ☁️ Cloud assets render effortlessly with zero pop-in delay on click */}
                 <img 
-                  src={`../images/${imageFileName}`} // Pointing to your local src/images directory
+                  src={finalImageUrl} 
                   alt={player.name}
                   style={{
                     width: '100px',

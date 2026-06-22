@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import OpeningScreen from "./OpeningScreen";
 import Round1Screen from "./Round1Screen";
 import Round2Screen from "./Round2Screen";
+import Round3Screen from './Round3Screen';
 import { db } from '../firebase'; // 🌟 Import your database
 import { doc, setDoc } from 'firebase/firestore'; 
 
@@ -34,8 +35,13 @@ const TVDisplay = () => {
       )}
 
       {currentScreen === 'round2' && (
-        <Round2Screen onNavigate={() => setCurrentScreen('opening')} /> 
+        <Round2Screen onNavigate={() => setCurrentScreen('round3')} /> 
       )}
+
+      {currentScreen === 'round3' && (
+        <Round3Screen onNavigate={() => setCurrentScreen('opening')} /> 
+      )}
+      
     </div>
   );
 };

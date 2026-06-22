@@ -4,6 +4,7 @@ import { doc, onSnapshot } from 'firebase/firestore'; // 🌟 Import onSnapshot 
 import OpeningPlayer from "./OpeningPlayer";
 import Round1Player from "./Round1Player"; // 🌟 Import player views for each round
 import Round2Player from './Round2Player';
+import Round3Player from './Round3Player';
 
 const PlayerDisplay = ({ user }) => {
   const [currentScreen, setCurrentScreen] = useState('loading'); // Start at loading state
@@ -46,6 +47,10 @@ const PlayerDisplay = ({ user }) => {
 
       {currentScreen === 'round2' && (
         <Round2Player user={user} /> // Passing full user object so they can fetch targets next!
+      )}
+
+      {currentScreen === 'round3' && (
+        <Round3Player user={user} /> // Passing full user object so they can fetch targets next!
       )}
     </div>
   );

@@ -101,10 +101,12 @@ const Round1Screen = ({ onNavigate }) => {
   return (
     <div className="Round1" style={{ padding: '20px', textAlign: 'center' }}>
       <h1>Round 1</h1>
-      <p style={{ maxWidth: '800px', margin: '0 auto 20px auto', color: '#bbb' }}>
-        Everyone gets assigned 1 person at random. Try to empty your shot without getting caught! 
-        Wrong accusations = half a shooter penalties.
-      </p>
+      <div style={{ maxWidth: '800px', margin: '0 auto 20px auto', color: '#bbb', textAlign: 'left', lineHeight: '1.6' }}>
+          <h2>Everyone gets assigned 1 target at random where they suppose to spike they’re drink</h2>
+          <h2>If your target catches you then you have to drink</h2>
+          <h2>Your drink will stay in one place in the living room and assassins need to empty their flasks without getting a shot</h2>
+          <h2>If someone accuses another person of spiking them and they’re wrong: Accuser drinks half a shooter.</h2>
+        </div>
 
       {/* ⏱️ VISUAL TIMER COMPONENT CONTROL BLOCK */}
       <div style={{

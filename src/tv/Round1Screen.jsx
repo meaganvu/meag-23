@@ -9,6 +9,10 @@ const Round1Screen = ({ onNavigate }) => {
   const [eliminatedPlayers, setEliminatedPlayers] = useState([]);
   const [imageUrls, setImageUrls] = useState({}); // 🌟 Cache storage links by key string
 
+  // ⏱️ TIMER STATES (20 minutes = 1200 seconds)
+  const [timeLeft, setTimeLeft] = useState(1200);
+  const [isRunning, setIsRunning] = useState(false);
+
   // 🔄 Fetch players and their initial Firebase Storage URLs on load
   useEffect(() => {
     const fetchPlayersAndImages = async () => {
@@ -33,7 +37,6 @@ const Round1Screen = ({ onNavigate }) => {
               urlMap[player.id] = url;
             } catch (err) {
               console.error(`Error fetching alive photo for ${player.id}:`, err);
-              // Fallback placeholder string if an individual image upload is missing
               urlMap[player.id] = 'https://via.placeholder.com/150';
             }
           })
@@ -48,18 +51,40 @@ const Round1Screen = ({ onNavigate }) => {
     fetchPlayersAndImages();
   }, []);
 
+  // ⏱️ TIMER LOGIC ENGINE
+  useEffect(() => {
+    let intervalId = null;
+
+    if (isRunning && timeLeft > 0) {
+      intervalId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setIsRunning(false);
+    }
+
+    // Cleanup interval thread on state changes or unmounting
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isRunning, timeLeft]);
+
+  // 🛠️ HELPER: Format seconds into MM:SS display format
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   // 🎯 Toggles a player's ID and fetches their eliminated photo link if missing
   const toggleElimination = async (playerId) => {
     const isCurrentlyEliminated = eliminatedPlayers.includes(playerId);
 
     if (isCurrentlyEliminated) {
-      // Return to Alive: Remove from list
       setEliminatedPlayers(eliminatedPlayers.filter(id => id !== playerId));
     } else {
-      // Progress to Eliminated: Add to list
       setEliminatedPlayers([...eliminatedPlayers, playerId]);
 
-      // Cache the "-eliminated.jpeg" cloud URL if we haven't grabbed it yet
       const eliminatedKey = `${playerId}-eliminated`;
       if (!imageUrls[eliminatedKey]) {
         try {
@@ -81,6 +106,62 @@ const Round1Screen = ({ onNavigate }) => {
         Wrong accusations = half a shooter penalties.
       </p>
 
+      {/* ⏱️ VISUAL TIMER COMPONENT CONTROL BLOCK */}
+      <div style={{
+        background: '#1a1a1a',
+        border: '2px solid #333',
+        borderRadius: '12px',
+        padding: '20px',
+        maxWidth: '300px',
+        margin: '20px auto',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
+      }}>
+        <div style={{ 
+          fontSize: '3rem', 
+          fontFamily: 'monospace', 
+          fontWeight: 'bold',
+          color: timeLeft === 0 ? '#ff4d4d' : isRunning ? '#2ecc71' : '#fff',
+          letterSpacing: '2px',
+          marginBottom: '10px'
+        }}>
+          {formatTime(timeLeft)}
+        </div>
+        
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <button 
+            onClick={() => setIsRunning(!isRunning)}
+            disabled={timeLeft === 0}
+            style={{
+              padding: '8px 20px',
+              borderRadius: '6px',
+              border: 'none',
+              cursor: timeLeft === 0 ? 'not-allowed' : 'pointer',
+              fontWeight: 'bold',
+              background: isRunning ? '#e74c3c' : '#2ecc71',
+              color: '#fff',
+              transition: 'background 0.2s'
+            }}
+          >
+            {isRunning ? 'Pause' : 'Start'}
+          </button>
+
+          <button 
+            onClick={() => { setIsRunning(false); setTimeLeft(1200); }}
+            style={{
+              padding: '8px 20px',
+              borderRadius: '6px',
+              border: '1px solid #555',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              background: '#333',
+              color: '#fff'
+            }}
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+
       {/* 💻 THE PLAYER ELIMINATION DASHBOARD GRID */}
       <div style={{
         display: 'grid',
@@ -91,10 +172,8 @@ const Round1Screen = ({ onNavigate }) => {
       }}>
         {players.map((player) => {
           const isEliminated = eliminatedPlayers.includes(player.id);
-          
-          // 🖼️ Look up the dynamic URL pointer string cached from Firebase Storage
           const currentImageUrl = isEliminated 
-            ? imageUrls[`${player.id}-eliminated`] || imageUrls[player.id] // Fallback to normal photo if eliminated variant fails loading
+            ? imageUrls[`${player.id}-eliminated`] || imageUrls[player.id]
             : imageUrls[player.id];
 
           return (
@@ -112,7 +191,7 @@ const Round1Screen = ({ onNavigate }) => {
               }}
             >
               <img 
-                src={currentImageUrl || 'https://via.placeholder.com/150'} // Renders direct HTTPS link from cloud bucket
+                src={currentImageUrl || 'https://via.placeholder.com/150'}
                 alt={player.name}
                 style={{
                   width: '100px',

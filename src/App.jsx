@@ -5,7 +5,8 @@ import { db } from './firebase';
 // Imported BOTH getDocs and getDoc properly here 👇
 import { collection, doc, setDoc, getDocs, getDoc } from 'firebase/firestore'; 
 import phoneNumbers from './phone-numbers.json';
-import TVDisplay from './TVDisplay';
+import TVDisplay from './tv/TVDisplay';
+import PlayerDisplay from './player/PlayerDisplay';
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
@@ -86,7 +87,7 @@ function App() {
           {user.phone === '07032003' ? (
             <TVDisplay />
           ) : (
-            <h1>Welcome, {user.name}!</h1>
+            <PlayerDisplay user= {user}/>
           )}
         </div>
       )}

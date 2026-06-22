@@ -1,7 +1,7 @@
-import { db } from './firebase';
+import { db } from '../firebase';
 import { collection, getDocs, doc, updateDoc, deleteField } from 'firebase/firestore';
 
-function AssignPlayer() {
+function AssignPlayerRound1() {
   
   const generateAssignments = async () => {
     try {
@@ -31,12 +31,13 @@ function AssignPlayer() {
       // 3. Create the assignments in a closed loop
       for (let i = 0; i < shuffled.length; i++) {
         const currentPlayer = shuffled[i];
-        const nextPlayer = shuffled[(i + 1) % shuffled.length];
+        const nextPlayer = shuffled[(i + 1) % shuffled.length]; // This is the full target object 🎯
 
-        // 4. Update the active players' documents silently in the backend
+        // 4. Update the active players' documents with BOTH the ID and the Name
         const playerDocRef = doc(db, 'users', currentPlayer.id);
         await updateDoc(playerDocRef, {
-          assignedPlayerId: nextPlayer.id // References their match's document ID string
+          assignedPlayerId: nextPlayer.id,
+          assignedPlayerName: nextPlayer.Name || 'Unknown' // 🌟 Added: Logs the target's name text field
         });
       }
 
@@ -55,9 +56,10 @@ function AssignPlayer() {
       for (const playerDoc of querySnapshot.docs) {
         const playerDocRef = doc(db, 'users', playerDoc.id);
 
-        // This removes the field entirely from the database backend
+        // 🔄 Clears out BOTH the target ID and the target name for a completely clean slate
         await updateDoc(playerDocRef, {
-          assignedPlayerId: deleteField() 
+          assignedPlayerId: deleteField(),
+          assignedPlayerName: deleteField() // 🌟 Added: Wipes out the name on reset too
         });
       }
 
@@ -72,11 +74,11 @@ function AssignPlayer() {
       <button onClick={generateAssignments} className="generate-btn">
         Generate Assignments
       </button>
-      <button onClick={resetAssignments} className="reset-btn" >
+      <button onClick={resetAssignments} className="reset-btn" style={{ marginLeft: '10px', backgroundColor: '#ff4d4d', color: 'white' }}>
         Reset Round
       </button>
     </div>
   );
 }
 
-export default AssignPlayer;
+export default AssignPlayerRound1;

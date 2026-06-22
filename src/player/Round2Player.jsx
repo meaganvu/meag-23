@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase'; // Adjusted path slightly to match your folder tree
+import { db, storage } from '../firebase'; // 🟢 Added storage import
 import { doc, onSnapshot } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage'; // 🟢 Added Firebase Storage methods
 
 function Round2Player({ user }) {
-  // Added targetId and partnerId fields to hold the database string IDs
   const [matchData, setMatchData] = useState({ 
     targetName: null, 
     targetId: null,
+    targetImageUrl: null, // 🟢 To hold cloud storage target photo
     partnerName: null, 
-    partnerId: null 
+    partnerId: null,
+    partnerImageUrl: null // 🟢 To hold cloud storage partner photo
   });
 
   useEffect(() => {
@@ -17,14 +19,42 @@ function Round2Player({ user }) {
     const playerDocRef = doc(db, 'users', user.phone);
 
     // 🎧 Live listen to this player's document for round 2 fields
-    const unsubscribe = onSnapshot(playerDocRef, (docSnap) => {
+    const unsubscribe = onSnapshot(playerDocRef, async (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
+        const tId = data.assignedPlayerId || null;
+        const pId = data.partnerId || null;
+        
+        let targetUrl = null;
+        let partnerUrl = null;
+
+        // ⚡️ Fetch both avatar URLs from storage in parallel to maximize speed
+        try {
+          const fetches = [];
+          
+          if (tId) {
+            const targetRef = ref(storage, `${tId}.jpeg`);
+            fetches.push(getDownloadURL(targetRef).then(url => targetUrl = url).catch(() => 'https://via.placeholder.com/150'));
+          }
+          if (pId) {
+            const partnerRef = ref(storage, `${pId}.jpeg`);
+            fetches.push(getDownloadURL(partnerRef).then(url => partnerUrl = url).catch(() => 'https://via.placeholder.com/150'));
+          }
+
+          if (fetches.length > 0) {
+            await Promise.all(fetches);
+          }
+        } catch (err) {
+          console.error("Error resolution fetching cloud storage assets:", err);
+        }
+
         setMatchData({
           targetName: data.assignedPlayerName || null,
-          targetId: data.assignedPlayerId || null,      // 🎯 Pulls target image key
+          targetId: tId,
+          targetImageUrl: targetUrl,
           partnerName: data.partnerName || null,
-          partnerId: data.partnerId || null             // 🤝 Pulls partner image key
+          partnerId: pId,
+          partnerImageUrl: partnerUrl
         });
       }
     }, (error) => {
@@ -34,14 +64,14 @@ function Round2Player({ user }) {
     return () => unsubscribe();
   }, [user]);
 
-  const { targetName, targetId, partnerName, partnerId } = matchData;
+  const { targetName, targetId, targetImageUrl, partnerName, partnerId, partnerImageUrl } = matchData;
 
-  // Reusable circular image styling rules to guarantee they never squish again
+  // Reusable circular image styling rules
   const circularImageStyle = {
     width: '120px',
     height: '120px',
-    minWidth: '120px',  // 🛑 Prevents horizontal text squishing
-    minHeight: '120px', // 🛑 Prevents vertical squishing
+    minWidth: '120px',  
+    minHeight: '120px', 
     borderRadius: '50%',
     objectFit: 'cover',
     border: '4px solid white',
@@ -59,7 +89,6 @@ function Round2Player({ user }) {
 
       <hr style={{ margin: '30px 0', borderColor: '#444' }} />
 
-      {/* 🤝 & 🎯 Dynamically shows partner and target cards based on backend status */}
       {!targetName || !partnerName || !targetId || !partnerId ? (
         <div style={{ padding: '20px', background: '#222', borderRadius: '8px' }}>
           <h3>🕵️‍♂️ Waiting for the Host to assign partners and targets...</h3>
@@ -79,9 +108,9 @@ function Round2Player({ user }) {
               🤝 Your Partner In Crime:
             </h2>
 
-            {/* 📸 Local Partner Image Asset */}
+            {/* ☁️ Partner cloud photo lookup reference hook */}
             <img 
-              src={`../../images/${partnerId}.jpeg`} 
+              src={partnerImageUrl || 'https://via.placeholder.com/120'} 
               alt={partnerName}
               style={circularImageStyle} 
             />
@@ -106,9 +135,9 @@ function Round2Player({ user }) {
               🎯 Your Target:
             </h2>
 
-            {/* 📸 Local Target Image Asset */}
+            {/* ☁️ Target cloud photo lookup reference hook */}
             <img 
-              src={`../../images/${targetId}.jpeg`} 
+              src={targetImageUrl || 'https://via.placeholder.com/120'} 
               alt={targetName}
               style={circularImageStyle} 
             />

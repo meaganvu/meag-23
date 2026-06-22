@@ -1,22 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
+import { db, storage } from '../firebase'; // 🟢 Added storage import
 import { doc, onSnapshot } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage'; // 🟢 Added Firebase Storage methods
 
 function Round1Player({ user }) {
-  // Save both name and ID so we can pull the matching picture
-  const [target, setTarget] = useState({ name: null, id: null });
+  // Save name, ID, and the real-time download URL
+  const [target, setTarget] = useState({ name: null, id: null, imageUrl: null });
 
   useEffect(() => {
     if (!user || !user.phone) return;
 
     const playerDocRef = doc(db, 'users', user.phone);
 
-    const unsubscribe = onSnapshot(playerDocRef, (docSnap) => {
+    const unsubscribe = onSnapshot(playerDocRef, async (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
+        const targetId = data.assignedPlayerId || null;
+        const targetName = data.assignedPlayerName || null;
+        let fetchedImageUrl = null;
+
+        // 📸 If a target exists, fetch their image directly from Firebase Storage root
+        if (targetId) {
+          try {
+            const storageRef = ref(storage, `${targetId}.jpeg`);
+            fetchedImageUrl = await getDownloadURL(storageRef);
+          } catch (err) {
+            console.error("Error fetching target image URL:", err);
+            // Fallback placeholder if image doesn't exist in storage
+            fetchedImageUrl = 'https://via.placeholder.com/150'; 
+          }
+        }
+
         setTarget({
-          name: data.assignedPlayerName || null,
-          id: data.assignedPlayerId || null
+          name: targetName,
+          id: targetId,
+          imageUrl: fetchedImageUrl
         });
       }
     }, (error) => {
@@ -51,9 +69,9 @@ function Round1Player({ user }) {
             YOUR TARGET IS:
           </h2>
 
-          {/* 📸 Target Photo Loaded Directly From Your Local Directory */}
+          {/* ☁️ Target Photo loaded straight from Firebase Storage! */}
           <img 
-            src={`/images/${target.id}.jpeg`} 
+            src={target.imageUrl || 'https://via.placeholder.com/140'} 
             alt={target.name}
             style={{ 
               width: '140px', 

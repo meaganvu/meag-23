@@ -3,14 +3,39 @@ import OpeningScreen from "./OpeningScreen";
 import Round1Screen from "./Round1Screen";
 import Round2Screen from "./Round2Screen";
 import Round3Screen from './Round3Screen';
-import { db } from '../firebase'; // 🌟 Import your database
-import { doc, setDoc } from 'firebase/firestore'; 
+import { db } from '../firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore'; // 🟢 Added getDoc
 
 const TVDisplay = () => {
-  const [currentScreen, setCurrentScreen] = useState('opening');
+  // 🟢 Initialize as null (or a loading state) so we don't accidentally overwrite Firestore on load
+  const [currentScreen, setCurrentScreen] = useState(null);
 
-  // 💾 Push screen updates to Firestore in real-time whenever it changes
+  // 1️⃣ 🔄 Fetch initial game state from Firestore when the component first boots up
   useEffect(() => {
+    const fetchInitialState = async () => {
+      try {
+        const statusDocRef = doc(db, 'status', 'game');
+        const docSnap = await getDoc(statusDocRef);
+        
+        if (docSnap.exists() && docSnap.data().currentScreen) {
+          setCurrentScreen(docSnap.data().currentScreen);
+        } else {
+          // Fallback if the document doesn't exist yet
+          setCurrentScreen('opening');
+        }
+      } catch (error) {
+        console.error("Error fetching initial game state:", error);
+        setCurrentScreen('opening'); // Emergency fallback
+      }
+    };
+
+    fetchInitialState();
+  }, []);
+
+  // 2️⃣ 💾 Push screen updates to Firestore ONLY after we have loaded the initial state
+  useEffect(() => {
+    if (currentScreen === null) return; // 🛑 Don't write to Firestore while loading the initial state
+
     const updateGlobalStatus = async () => {
       try {
         const statusDocRef = doc(db, 'status', 'game');
@@ -23,6 +48,11 @@ const TVDisplay = () => {
 
     updateGlobalStatus();
   }, [currentScreen]);
+
+  // ⌛️ Simple loading guard so the screen doesn't flicker or break while fetching from the database
+  if (currentScreen === null) {
+    return <div style={{ textAlign: 'center', padding: '50px', color: '#fff' }}>Loading game state...</div>;
+  }
 
   return (
     <div className="TVDisplay-container">
@@ -41,7 +71,6 @@ const TVDisplay = () => {
       {currentScreen === 'round3' && (
         <Round3Screen onNavigate={() => setCurrentScreen('opening')} /> 
       )}
-      
     </div>
   );
 };

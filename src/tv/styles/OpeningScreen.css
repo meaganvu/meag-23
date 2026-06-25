@@ -1,0 +1,70 @@
+.OpeningScreen {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #2f2b44;
+    overflow: hidden;
+}
+
+.center-pink-piece {
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+.blue-blob-opener{
+
+    position:absolute;
+
+    top:0px;
+    right:0px;
+
+    width:380px;
+
+    z-index:2;
+}
+
+.dice{
+    position:absolute;
+
+    left:110px;
+    bottom:180px;
+
+    width:180px;
+
+    z-index:2;
+}
+
+.start-button{
+    position:absolute;
+
+    left:80px;
+    bottom:70px;
+
+    width:230px;
+    height:80px;
+
+    border-radius:45px;
+
+    border:4px solid white;
+
+    background:transparent;
+
+    color:white;
+
+    font-size:2rem;
+
+    z-index:3;
+}
+
+.start-button:hover{
+    background:white;
+    cursor:pointer;
+    color: #2f2b44;
+}

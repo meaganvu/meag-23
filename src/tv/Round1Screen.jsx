@@ -3,6 +3,11 @@ import { db, storage } from '../firebase'; // 🌟 Import storage instance
 import { collection, getDocs } from 'firebase/firestore';
 import { ref, getDownloadURL } from 'firebase/storage'; // 🌟 Import storage utilities
 import AssignPlayerRound1 from "./AssignPlayerRound1";
+import "./styles/RoundScreenGeneral.css";
+
+import roundScreenBackground from "../assets/tv/roundScreenBackground.png";
+import glassBottle1 from "../assets/tv/glassBottle1.png";
+import glassBottle2 from "../assets/tv/glassBottle2.png";
 
 const Round1Screen = ({ onNavigate }) => {
   const [players, setPlayers] = useState([]);
@@ -99,70 +104,90 @@ const Round1Screen = ({ onNavigate }) => {
   };
 
   return (
-    <div className="Round1" style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Round 1</h1>
-      <div style={{ maxWidth: '800px', margin: '0 auto 20px auto', color: '#bbb', textAlign: 'left', lineHeight: '1.6' }}>
-          <h2>Everyone gets assigned 1 target at random where they suppose to spike they’re drink</h2>
-          <h2>If your target catches you then you have to drink</h2>
-          <h2>Your drink will stay in one place in the living room and assassins need to empty their flasks without getting a shot</h2>
-          <h2>If someone accuses another person of spiking them and they’re wrong: Accuser drinks half a shooter.</h2>
-        </div>
+    <div className="Round1Container">
+      <img
+        src={roundScreenBackground}
+        className="round-screen-background"
+        alt="round-screen-background"
+      />
 
-      {/* ⏱️ VISUAL TIMER COMPONENT CONTROL BLOCK */}
-      <div style={{
-        background: '#1a1a1a',
-        border: '2px solid #333',
-        borderRadius: '12px',
-        padding: '20px',
-        maxWidth: '300px',
-        margin: '20px auto',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
-      }}>
-        <div style={{ 
-          fontSize: '3rem', 
-          fontFamily: 'monospace', 
-          fontWeight: 'bold',
-          color: timeLeft === 0 ? '#ff4d4d' : isRunning ? '#2ecc71' : '#fff',
-          letterSpacing: '2px',
-          marginBottom: '10px'
+      <h1 className='atomic-age-regular round-title'>
+        <img
+          src={glassBottle1}
+          className="glass-bottle1"
+          alt="glass-bottle1"
+        />
+        ROUND 1
+        <img
+          src={glassBottle2}
+          className="glass-bottle2"
+          alt="glass-bottle2"
+        />
+      </h1>
+      <div className="round-instructions-timer-container">
+        <div className="round-instructions">
+            <h2>Everyone gets assigned 1 target at random where they suppose to spike they’re drink</h2>
+            <h2>If your target catches you then you have to drink</h2>
+            <h2>Your drink will stay in one place in the living room and assassins need to empty their flasks without getting a shot</h2>
+            <h2>If someone accuses another person of spiking them and they’re wrong: Accuser drinks half a shooter.</h2>
+        </div>
+        {/* ⏱️ VISUAL TIMER COMPONENT CONTROL BLOCK */}
+        <div style={{
+          background: '#1a1a1a',
+          border: '2px solid #333',
+          borderRadius: '12px',
+          padding: '20px',
+          maxWidth: '300px',
+          margin: '20px auto',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
         }}>
-          {formatTime(timeLeft)}
-        </div>
-        
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          <button 
-            onClick={() => setIsRunning(!isRunning)}
-            disabled={timeLeft === 0}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '6px',
-              border: 'none',
-              cursor: timeLeft === 0 ? 'not-allowed' : 'pointer',
-              fontWeight: 'bold',
-              background: isRunning ? '#e74c3c' : '#2ecc71',
-              color: '#fff',
-              transition: 'background 0.2s'
-            }}
-          >
-            {isRunning ? 'Pause' : 'Start'}
-          </button>
+          <div style={{ 
+            fontSize: '3rem', 
+            fontFamily: 'monospace', 
+            fontWeight: 'bold',
+            color: timeLeft === 0 ? '#ff4d4d' : isRunning ? '#2ecc71' : '#fff',
+            letterSpacing: '2px',
+            marginBottom: '10px'
+          }}>
+            {formatTime(timeLeft)}
+          </div>
+          
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <button 
+              onClick={() => setIsRunning(!isRunning)}
+              disabled={timeLeft === 0}
+              style={{
+                padding: '8px 20px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: timeLeft === 0 ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold',
+                background: isRunning ? '#e74c3c' : '#2ecc71',
+                color: '#fff',
+                transition: 'background 0.2s'
+              }}
+            >
+              {isRunning ? 'Pause' : 'Start'}
+            </button>
 
-          <button 
-            onClick={() => { setIsRunning(false); setTimeLeft(1200); }}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '6px',
-              border: '1px solid #555',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              background: '#333',
-              color: '#fff'
-            }}
-          >
-            Reset
-          </button>
+            <button 
+              onClick={() => { setIsRunning(false); setTimeLeft(1200); }}
+              style={{
+                padding: '8px 20px',
+                borderRadius: '6px',
+                border: '1px solid #555',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                background: '#333',
+                color: '#fff'
+              }}
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </div>
+
 
       {/* 💻 THE PLAYER ELIMINATION DASHBOARD GRID */}
       <div style={{

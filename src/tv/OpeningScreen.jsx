@@ -1,14 +1,32 @@
+import "./styles/OpeningScreen.css";
+import blueBlobOpener from "../assets/tv/blueBlobOpener.png";
+import centerPinkPiece from "../assets/tv/centerPinkPiece.png";
+import dice from "../assets/tv/dice.png";
+
 const OpeningScreen = ({ onNavigate }) => {
-
   return (
-    <div className="OpeningScrren">
-      <h1>HELLO WELCOME TO MY 23 BIRTHDAY PARTY</h1>
-      <h2>Tonight we'll be playing Drinking Assassin and here are the rulesssss</h2>
-      <h2>There will be 3 rounds</h2>
-      <h2>3 rounds 1 shot a round. 20 min rounds </h2>
+    <div className="OpeningScreen">
+      <img
+        src={centerPinkPiece}
+        className="center-pink-piece"
+        alt="center-pink-piece"
+      />
 
-      <button onClick={onNavigate} className="next-btn">
-        Start Round 1
+      <img
+        src={blueBlobOpener}
+        className="blue-blob-opener"
+        alt="Game rules"
+      />
+
+      {/* wrap these two in a div together? */}
+      <img
+        src={dice}
+        className="dice"
+        alt="Dice"
+      />
+      
+      <button onClick={onNavigate} className="start-button atomic-age-regular">
+        Start ▶
       </button>
     </div>
   );

@@ -110,8 +110,8 @@ const Round1Screen = ({ onNavigate }) => {
         className="round-screen-background"
         alt="round-screen-background"
       />
-
-      <h1 className='atomic-age-regular round-title'>
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <h1 className='atomic-age-regular round-title'>
         <img
           src={glassBottle1}
           className="glass-bottle1"
@@ -247,6 +247,7 @@ const Round1Screen = ({ onNavigate }) => {
       <button onClick={onNavigate} className="next-btn" style={{ marginTop: '20px' }}>
         Go to Round 2
       </button>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,27 @@
+{
+    "Rock": [
+      { "id": 1, "title": "Bohemian Rhapsody", "artist": "Queen" },
+      { "id": 2, "title": "Back In Black", "artist": "AC/DC" },
+      { "id": 3, "title": "Hotel California", "artist": "Eagles" }
+    ],
+    "RnB": [
+      { "id": 4, "title": "No Scrubs", "artist": "TLC" },
+      { "id": 5, "title": "Blinding Lights", "artist": "The Weeknd" },
+      { "id": 6, "title": "Yeah!", "artist": "Usher" }
+    ],
+    "Pop": [
+      { "id": 7, "title": "Bad Romance", "artist": "Lady Gaga" },
+      { "id": 8, "title": "As It Was", "artist": "Harry Styles" },
+      { "id": 9, "title": "Shape of You", "artist": "Ed Sheeran" }
+    ],
+    "Soul": [
+      { "id": 10, "title": "Respect", "artist": "Aretha Franklin" },
+      { "id": 11, "title": "What's Going On", "artist": "Marvin Gaye" },
+      { "id": 12, "title": "Superstition", "artist": "Stevie Wonder" }
+    ],
+    "Blues": [
+      { "id": 13, "title": "The Thrill Is Gone", "artist": "B.B. King" },
+      { "id": 14, "title": "Cross Road Blues", "artist": "Robert Johnson" },
+      { "id": 15, "title": "Texas Flood", "artist": "Stevie Ray Vaughan" }
+    ]
+  }

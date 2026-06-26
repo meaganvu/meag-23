@@ -2,20 +2,20 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import SignIn from './SignIn';
 import { db } from './firebase';
-import { collection, doc, setDoc, getDocs, getDoc } from 'firebase/firestore'; 
+import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
 import phoneNumbers from './phone-numbers.json';
 import TVDisplay from './tv/TVDisplay';
 import PlayerDisplay from './player/PlayerDisplay';
 import TVTriviaDisplay from './song-trivia/tv/TVTriviaDisplay';
+import HostDisplay from './song-trivia/player/HostDisplay';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import PlayerDisplayTrivia from './song-trivia/player/PlayerDisplayTrivia';
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
 
-// 🟢 NEW HELPER COMPONENT: Resets Firestore game status when loading root (/)
 function RootHome({ user, handleSignInSuccess }) {
   useEffect(() => {
-    // Only clear the game state if the TV admin is the one accessing the root URL
     if (user && user.phone === '07032003') {
       const resetGlobalState = async () => {
         try {
@@ -30,12 +30,17 @@ function RootHome({ user, handleSignInSuccess }) {
     }
   }, [user]);
 
-  // Render what you originally had for the root path
-  return !user ? (
-    <SignIn onSignInSuccess={handleSignInSuccess} />
-  ) : (
+  if (!user) {
+    return <SignIn onSignInSuccess={handleSignInSuccess} />;
+  }
+
+  return (
     <div>
-      <TVDisplay />
+      {user.phone === '07032003' ? (
+        <TVDisplay />
+      ) : (
+        <PlayerDisplay user={user} />
+      )}
     </div>
   );
 }
@@ -46,13 +51,13 @@ function App() {
 
   useEffect(() => {
     const savedSession = localStorage.getItem('user_session');
-    
     if (savedSession) {
-      const { phone, name, loginTime } = JSON.parse(savedSession);
+      // 🟢 Added captain parameter to local session restoration
+      const { phone, name, team, captain, loginTime } = JSON.parse(savedSession);
       const currentTime = new Date().getTime();
 
       if (currentTime - loginTime < TWO_HOURS_MS) {
-        setUser({ phone, name });
+        setUser({ phone, name, team: team || "", captain: !!captain });
       } else {
         localStorage.removeItem('user_session');
       }
@@ -61,17 +66,18 @@ function App() {
   }, []);
 
   const syncUsersWithFirestore = async () => {
-    const usersRef = collection(db, 'users'); 
+    const usersRef = collection(db, 'users');
     try {
-      const existingUsersSnapshot = await getDocs(usersRef);
-      const existingUsers = existingUsersSnapshot.docs.map((doc) => doc.id); 
-      const newUsers = phoneNumbers.filter((u) => !existingUsers.includes(u.phone));
-
-      for (const u of newUsers) {
+      for (const u of phoneNumbers) {
         const userDoc = doc(usersRef, u.phone);
-        await setDoc(userDoc, { Name: u.name });
+        // 🟢 Merging Captain field to Firestore from local JSON. Defaults to false if not found.
+        await setDoc(userDoc, {
+          Name: u.name,
+          Team: u.team || "",
+          Captain: !!u.captain 
+        }, { merge: true });
       }
-      console.log('Firestore synced with phone-numbers.json');
+      console.log('Firestore synced with phone-numbers.json (Names, Teams & Captain Status Updated)');
     } catch (error) {
       console.error('Error syncing users with Firestore:', error);
     }
@@ -85,20 +91,33 @@ function App() {
     const userDocRef = doc(db, 'users', verifiedUser.phone);
 
     try {
+      const localUserRecord = phoneNumbers.find(u => u.phone === verifiedUser.phone);
+      const assignedTeam = localUserRecord?.team || "";
+      const isCaptain = !!localUserRecord?.captain; // 🟢 Extract captain status from local JSON
+
       const userSnapshot = await getDoc(userDocRef);
-      
       if (!userSnapshot.exists()) {
-        await setDoc(userDocRef, { Name: verifiedUser.name });
+        // 🟢 Adds Captain field if creating a new fallback user document
+        await setDoc(userDocRef, {
+          Name: verifiedUser.name,
+          Team: assignedTeam,
+          Captain: isCaptain
+        });
       }
 
-      const userData = { phone: verifiedUser.phone, name: verifiedUser.name };
+      const userData = {
+        phone: verifiedUser.phone,
+        name: verifiedUser.name,
+        team: assignedTeam,
+        captain: isCaptain // 🟢 Added to global runtime user object
+      };
       const sessionData = {
         ...userData,
         loginTime: new Date().getTime()
       };
       localStorage.setItem('user_session', JSON.stringify(sessionData));
 
-      setUser({ phone: verifiedUser.phone, name: verifiedUser.name });
+      setUser(userData);
     } catch (error) {
       console.error('Error verifying user in Firestore:', error);
     }
@@ -112,37 +131,32 @@ function App() {
     <Router>
       <div className="app-container">
         <Routes>
-          {/* ROUTE 1: Root Path (localhost:1010/) 
-              🟢 Swapped with our wrapper to handle the conditional Firestore reset
-          */}
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               <RootHome user={user} handleSignInSuccess={handleSignInSuccess} />
-            } 
+            }
           />
 
-          {/* ROUTE 2: Trivia Path (localhost:1010/trivia) */}
-          <Route 
-            path="/trivia" 
+          <Route
+            path="/trivia"
             element={
               user ? (
                 <div>
                   {user.phone === '07032003' ? (
-                    /* 🟢 Removed the broken onNavigate handler loop since TVTriviaDisplay 
-                       manages its own screen transitions internally */
                     <TVTriviaDisplay />
+                  ) : user.phone === '6692141979' ? (
+                    <HostDisplay />
                   ) : (
-                    <PlayerDisplay user={user} />
+                    <PlayerDisplayTrivia user={user} />
                   )}
                 </div>
               ) : (
                 <Navigate to="/" replace />
               )
-            } 
+            }
           />
 
-          {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

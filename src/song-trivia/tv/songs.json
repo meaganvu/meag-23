@@ -1,6 +1,6 @@
 {
     "Rock": [
-      { "id": 1, "title": "Bohemian Rhapsody", "artist": "Queen" },
+      { "id": 1, "title": "Bohemian Rhapsody", "artist": "Queen" , "uri": "spotify:track:5ChvYvMlG00vF6gFW1hZ7g"},
       { "id": 2, "title": "Back In Black", "artist": "AC/DC" },
       { "id": 3, "title": "Hotel California", "artist": "Eagles" }
     ],

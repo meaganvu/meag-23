@@ -127,7 +127,7 @@ function AssignPlayerRound2() {
   };
 
   return (
-    <div style={{ margin: '20px 0' }}>
+    <div className="round-assignment-actions">
       <button onClick={generateAssignments} className="generate-btn">
         Generate Round 2
       </button>

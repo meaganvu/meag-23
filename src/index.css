@@ -10,6 +10,29 @@
   font-style: normal;
 }
 
+.anonymous-pro-regular {
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.anonymous-pro-bold {
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.anonymous-pro-regular-italic {
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.anonymous-pro-bold-italic {
+  font-family: "Anonymous Pro", monospace;
+  font-weight: 700;
+  font-style: italic;
+}
 
 /* :root {
   --text: #6b6375;

@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { db, storage } from '../firebase'; // 🟢 Added storage import
 import { collection, getDocs } from 'firebase/firestore';
 import { ref, getDownloadURL } from 'firebase/storage'; // 🟢 Added Firebase Storage methods
-import AssignPlayerRound2 from "./AssignPlayerRound2";
+import "./styles/RoundScreenGeneral.css";
+
+import roundScreenBackground from "../assets/tv/roundScreenBackground.png";
+import glassBottle1 from "../assets/tv/glassBottle1.png";
+import glassBottle2 from "../assets/tv/glassBottle2.png";
 
 const Round3Screen = ({ onNavigate }) => {
   const [players, setPlayers] = useState([]);
@@ -102,81 +106,66 @@ const Round3Screen = ({ onNavigate }) => {
   };
 
   return (
-    <>
-      <div className="Round2" style={{ padding: '20px', textAlign: 'center' }}>
-        <h1>FINAL ROUND</h1>
-        <h1>Round 3</h1>
-        <div style={{ maxWidth: '800px', margin: '0 auto 20px auto', color: '#bbb', textAlign: 'left', lineHeight: '1.6' }}>
-          <h2>FREE FOR ALL SPIKE EVERYONES DRINK</h2>
-          <h2>BUT IF U GET CAUGHT BY THE PERSON WHOSE CUP UR POURING IT IN THEN UR OUT</h2>
-          <h2>FUCK IT FIND RANDOM SHIT AND POUR SHIT IN IT</h2>
-          <h2>If someone accuses another person of spiking them and they’re wrong: Accuser drinks half a shooter.</h2>
-        </div>
+    <div className="Round1Container">
+      <img
+        src={roundScreenBackground}
+        className="round-screen-background"
+        alt="round-screen-background"
+      />
+      <div className="round-screen-content">
+        <h1 className="atomic-age-regular round-title">
+          <img
+            src={glassBottle1}
+            className="glass-bottle1"
+            alt="glass-bottle1"
+          />
+          ROUND 3
+          <img
+            src={glassBottle2}
+            className="glass-bottle2"
+            alt="glass-bottle2"
+          />
+        </h1>
+        <div className="round-main-content">
+          <div className="round-instructions-timer-container">
+            <div className="round-instructions anonymous-pro-regular">
+              <h2>FREE FOR ALL SPIKE EVERYONES DRINK<br/>
+              BUT IF U GET CAUGHT BY THE PERSON WHOSE CUP UR POURING IT IN THEN UR OUT<br/>
+              FUCK IT FIND RANDOM SHIT AND POUR SHIT IN IT<br/>
+              If someone accuses another person of spiking them and they’re wrong: Accuser drinks half a shooter.</h2>
+            </div>
 
-        {/* ⏱️ VISUAL TIMER COMPONENT CONTROL BLOCK */}
-        <div style={{
-          background: '#1a1a1a',
-          border: '2px solid #333',
-          borderRadius: '12px',
-          padding: '20px',
-          maxWidth: '300px',
-          margin: '20px auto',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
-        }}>
-          <div style={{ 
-            fontSize: '3rem', 
-            fontFamily: 'monospace', 
-            fontWeight: 'bold',
-            color: timeLeft === 0 ? '#ff4d4d' : isRunning ? '#2ecc71' : '#fff',
-            letterSpacing: '2px',
-            marginBottom: '10px'
-          }}>
-            {formatTime(timeLeft)}
+            {/* ⏱️ VISUAL TIMER COMPONENT CONTROL BLOCK */}
+            <div className="round-timer-card">
+              <div
+                className={`round-timer-display ${
+                  timeLeft === 0 ? 'timer-ended' : isRunning ? 'timer-running' : ''
+                }`}
+              >
+                {formatTime(timeLeft)}
+              </div>
+              
+              <div className="round-timer-actions">
+                <button 
+                  onClick={() => setIsRunning(!isRunning)}
+                  disabled={timeLeft === 0}
+                  className={`round-timer-btn ${isRunning ? 'pause' : 'start'}`}
+                >
+                  {isRunning ? 'Pause' : 'Start'}
+                </button>
+
+                <button 
+                  onClick={() => { setIsRunning(false); setTimeLeft(1200); }}
+                  className="round-timer-btn reset"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
           </div>
-          
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <button 
-              onClick={() => setIsRunning(!isRunning)}
-              disabled={timeLeft === 0}
-              style={{
-                padding: '8px 20px',
-                borderRadius: '6px',
-                border: 'none',
-                cursor: timeLeft === 0 ? 'not-allowed' : 'pointer',
-                fontWeight: 'bold',
-                background: isRunning ? '#e74c3c' : '#2ecc71',
-                color: '#fff',
-                transition: 'background 0.2s'
-              }}
-            >
-              {isRunning ? 'Pause' : 'Start'}
-            </button>
-
-            <button 
-              onClick={() => { setIsRunning(false); setTimeLeft(1200); }}
-              style={{
-                padding: '8px 20px',
-                borderRadius: '6px',
-                border: '1px solid #555',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                background: '#333',
-                color: '#fff'
-            }}
-          >
-            Reset
-          </button>
-        </div>
-      </div>
 
         {/* 💻 THE PLAYER ELIMINATION DASHBOARD GRID */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)', // Enforces exactly 4 columns per row
-          gap: '20px',
-          maxWidth: '1000px',
-          margin: '30px auto'
-        }}>
+        <div className="elimination-dashboard">
           {players.map((player) => {
             const isEliminated = eliminatedPlayers.includes(player.id);
             
@@ -188,46 +177,31 @@ const Round3Screen = ({ onNavigate }) => {
               <div 
                 key={player.id}
                 onClick={() => toggleElimination(player.id)}
-                style={{
-                  background: isEliminated ? '#2a1212' : '#222',
-                  border: isEliminated ? '3px solid #ff4d4d' : '3px solid #444',
-                  borderRadius: '12px',
-                  padding: '15px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  opacity: isEliminated ? 0.65 : 1
-                }}
+                className={`player-elimination-card ${isEliminated ? 'eliminated' : ''}`}
               >
                 {/* ☁️ Cloud assets render effortlessly with zero pop-in delay on click */}
                 <img 
                   src={finalImageUrl} 
                   alt={player.name}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: isEliminated ? '3px solid #ff4d4d' : '3px solid #fff',
-                    display: 'block',
-                    margin: '0 auto 10px auto'
-                  }}
+                  className="player-elimination-photo"
                 />
-                <h3 style={{ color: isEliminated ? '#ff4d4d' : '#fff', margin: '5px 0 0 0' }}>
+                <h3>
                   {player.name}
                 </h3>
-                <span style={{ fontSize: '0.8rem', color: isEliminated ? '#ff4d4d' : '#888' }}>
-                  {isEliminated ? '💀 ELIMINATED' : '🟢 ALIVE'}
+                <span>
+                  {isEliminated ? 'ELIMINATED' : 'ALIVE'}
                 </span>
               </div>
             );
           })}
         </div>
+        </div>
         
-        <button onClick={onNavigate} className="next-btn" style={{ marginTop: '20px' }}>
+        <button onClick={onNavigate} className="next-btn">
           Go to opening
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -70,11 +70,11 @@ function AssignPlayerRound1() {
   };
 
   return (
-    <div style={{ margin: '20px 0' }}>
+    <div className="round-assignment-actions">
       <button onClick={generateAssignments} className="generate-btn">
         Generate Assignments
       </button>
-      <button onClick={resetAssignments} className="reset-btn" style={{ marginLeft: '10px', backgroundColor: '#ff4d4d', color: 'white' }}>
+      <button onClick={resetAssignments} className="reset-btn">
         Reset Round
       </button>
     </div>

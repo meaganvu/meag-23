@@ -126,7 +126,7 @@ const Round1Screen = ({ onNavigate }) => {
       </h1>
       <div className="round-main-content">
         <div className="round-instructions-timer-container">
-          <div className="round-instructions anonymous-pro-regular">
+          <div className="round-instructions">
               <h2>Everyone gets assigned 1 target at random where they suppose to spike they’re drink<br/>
               If your target catches you then you have to drink<br/>
               Your drink will stay in one place in the living room and assassins need to empty their flasks without getting a shot<br/>

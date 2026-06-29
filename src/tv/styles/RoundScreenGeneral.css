@@ -89,6 +89,9 @@
     font-weight: 700;
     line-height: 1.25;
     letter-spacing: 0;
+    color: #eeeaf6;
+    font-family: "Anonymous Pro", monospace;
+    font-weight: 300;
 }
 
 .round-timer-card {
@@ -238,6 +241,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-family: "Atomic Age", system-ui;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #d8d1e8;
 }
 
 .player-elimination-card.eliminated h3,
@@ -250,6 +258,7 @@
     font-size: clamp(10px, 0.95vw, 13px);
     line-height: 1;
     font-weight: 700;
+    font-family: "Anonymous Pro", monospace;
 }
 
 .round-assignment-actions {

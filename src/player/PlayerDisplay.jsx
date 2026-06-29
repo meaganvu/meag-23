@@ -5,6 +5,7 @@ import OpeningPlayer from "./OpeningPlayer";
 import Round1Player from "./Round1Player"; // 🌟 Import player views for each round
 import Round2Player from './Round2Player';
 import Round3Player from './Round3Player';
+import "./styles/PlayerScreen.css";
 
 const PlayerDisplay = ({ user }) => {
   const [currentScreen, setCurrentScreen] = useState('loading'); // Start at loading state
@@ -34,7 +35,14 @@ const PlayerDisplay = ({ user }) => {
   return (
     <div className="PlayerDisplay-container">
       {currentScreen === 'loading' && (
-        <div><h2>Connecting to TV screen... 🕒</h2></div>
+        <div className="player-screen">
+          <div className="player-shell">
+            <section className="player-status-card">
+              <p className="player-kicker">Game Sync</p>
+              <h2>Connecting to TV screen...</h2>
+            </section>
+          </div>
+        </div>
       )}
 
       {currentScreen === 'opening' && (

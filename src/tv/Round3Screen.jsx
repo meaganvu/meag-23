@@ -128,7 +128,7 @@ const Round3Screen = ({ onNavigate }) => {
         </h1>
         <div className="round-main-content">
           <div className="round-instructions-timer-container">
-            <div className="round-instructions anonymous-pro-regular">
+            <div className="round-instructions">
               <h2>FREE FOR ALL SPIKE EVERYONES DRINK<br/>
               BUT IF U GET CAUGHT BY THE PERSON WHOSE CUP UR POURING IT IN THEN UR OUT<br/>
               FUCK IT FIND RANDOM SHIT AND POUR SHIT IN IT<br/>

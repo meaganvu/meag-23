@@ -66,92 +66,57 @@ function Round2Player({ user }) {
 
   const { targetName, targetId, targetImageUrl, partnerName, partnerId, partnerImageUrl } = matchData;
 
-  // Reusable circular image styling rules
-  const circularImageStyle = {
-    width: '120px',
-    height: '120px',
-    minWidth: '120px',  
-    minHeight: '120px', 
-    borderRadius: '50%',
-    objectFit: 'cover',
-    border: '4px solid white',
-    margin: '15px auto',
-    display: 'block',
-    backgroundColor: '#333'
-  };
-
   return (
-    <div className="player-container" style={{ textAlign: 'center', padding: '20px' }}>
-      <h1>Welcome to Round 2, {user.name}!</h1>
-      <p style={{ fontStyle: 'italic', color: '#888' }}>
-        Double trouble. Watch your partner's cup, watch your own, and hunt down your target.
-      </p>
-
-      <hr style={{ margin: '30px 0', borderColor: '#444' }} />
+    <div className="player-screen">
+      <div className="player-shell">
+        <header className="player-hero">
+          <p className="player-kicker">Round 2</p>
+          <h1>Welcome, {user.name}!</h1>
+          <p>Double trouble. Watch your partner's cup, watch your own, and hunt down your target.</p>
+        </header>
 
       {!targetName || !partnerName || !targetId || !partnerId ? (
-        <div style={{ padding: '20px', background: '#222', borderRadius: '8px' }}>
-          <h3>🕵️‍♂️ Waiting for the Host to assign partners and targets...</h3>
-        </div>
+        <section className="player-status-card">
+          <p className="player-kicker">Assignment Pending</p>
+          <h2>Waiting for partners and targets...</h2>
+          <p>Your round 2 info will appear here automatically.</p>
+        </section>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '400px', margin: '0 auto' }}>
+        <div className="player-card-stack">
           
           {/* Partner Card */}
-          <div style={{ 
-            padding: '20px', 
-            background: '#144621', 
-            border: '2px solid #2ecc71', 
-            borderRadius: '8px',
-            boxShadow: '0 4px 15px rgba(46, 204, 113, 0.2)'
-          }}>
-            <h2 style={{ letterSpacing: '1px', textTransform: 'uppercase', color: '#a2f1c1', margin: '0 0 5px 0', fontSize: '1.2rem' }}>
-              🤝 Your Partner In Crime:
-            </h2>
+          <section className="player-card player-card-ally">
+            <p className="player-card-label">Your Partner In Crime</p>
 
             {/* ☁️ Partner cloud photo lookup reference hook */}
             <img 
               src={partnerImageUrl || 'https://via.placeholder.com/120'} 
               alt={partnerName}
-              style={circularImageStyle} 
+              className="player-target-photo" 
             />
 
-            <h1 style={{ fontSize: '2.2rem', margin: '10px 0', color: '#fff' }}>
-              {partnerName}
-            </h1>
-            <p style={{ fontSize: '0.85rem', color: '#d1f7e0', margin: 0 }}>
-              Protect each other's cups! If you catch their assassin, the assassin's partner drinks.
-            </p>
-          </div>
+            <h2>{partnerName}</h2>
+            <p>Protect each other's cups. If you catch their assassin, the assassin's partner drinks.</p>
+          </section>
 
           {/* Target Card */}
-          <div style={{ 
-            padding: '20px', 
-            background: '#841515', 
-            border: '2px solid #ff4d4d', 
-            borderRadius: '8px',
-            boxShadow: '0 4px 15px rgba(255, 77, 77, 0.2)'
-          }}>
-            <h2 style={{ letterSpacing: '1px', textTransform: 'uppercase', color: '#ffb3b3', margin: '0 0 5px 0', fontSize: '1.2rem' }}>
-              🎯 Your Target:
-            </h2>
+          <section className="player-card player-card-danger">
+            <p className="player-card-label">Your Target</p>
 
             {/* ☁️ Target cloud photo lookup reference hook */}
             <img 
               src={targetImageUrl || 'https://via.placeholder.com/120'} 
               alt={targetName}
-              style={circularImageStyle} 
+              className="player-target-photo" 
             />
 
-            <h1 style={{ fontSize: '2.2rem', margin: '10px 0', color: '#fff' }}>
-              {targetName}
-            </h1>
-            <p style={{ fontSize: '0.85rem', color: '#ffcccc', margin: 0 }}>
-              Spike their drink! Remember, they are completely independent of your partner.
-            </p>
-          </div>
+            <h2>{targetName}</h2>
+            <p>Spike their drink. Your target is independent of your partner.</p>
+          </section>
 
         </div>
       )}
+      </div>
     </div>
   );
 }

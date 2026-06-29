@@ -129,7 +129,7 @@ const Round2Screen = ({ onNavigate }) => {
         </h1>
         <div className="round-main-content">
           <div className="round-instructions-timer-container">
-            <div className="round-instructions anonymous-pro-regular">
+            <div className="round-instructions">
               <h2>Everyone still gets assigned 1 target at random where they suppose to spike they’re drink<br/>
               BUT now everyone gets a partner<br/>
               Your partner will help look after your cup as well as their own<br/>

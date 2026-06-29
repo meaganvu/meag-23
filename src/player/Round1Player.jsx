@@ -45,53 +45,36 @@ function Round1Player({ user }) {
   }, [user]);
 
   return (
-    <div className="player-container" style={{ textAlign: 'center', padding: '20px' }}>
-      <h1>Welcome to Round 1, {user.name}!</h1>
-      <p style={{ fontStyle: 'italic', color: '#888' }}>
-        Keep your eyes peeled, your drink guarded, and look out for assassins...
-      </p>
-
-      <hr style={{ margin: '30px 0', borderColor: '#444' }} />
+    <div className="player-screen">
+      <div className="player-shell">
+        <header className="player-hero">
+          <p className="player-kicker">Round 1</p>
+          <h1>Welcome, {user.name}!</h1>
+          <p>Keep your eyes peeled, your drink guarded, and look out for assassins.</p>
+        </header>
 
       {!target.name || !target.id ? (
-        <div style={{ padding: '20px', background: '#222', borderRadius: '8px' }}>
-          <h3>🕵️‍♂️ Waiting for the Host to assign targets...</h3>
-        </div>
+        <section className="player-status-card">
+          <p className="player-kicker">Assignment Pending</p>
+          <h2>Waiting for the host to assign targets...</h2>
+          <p>Your target will appear here automatically.</p>
+        </section>
       ) : (
-        <div style={{ 
-          padding: '20px', 
-          background: '#841515', 
-          border: '2px solid #ff4d4d', 
-          borderRadius: '8px',
-          boxShadow: '0 4px 15px rgba(255, 77, 77, 0.3)'
-        }}>
-          <h2 style={{ letterSpacing: '1px', textTransform: 'uppercase', color: '#ffb3b3' }}>
-            YOUR TARGET IS:
-          </h2>
+        <section className="player-card player-card-danger">
+          <p className="player-card-label">Your Target Is</p>
 
           {/* ☁️ Target Photo loaded straight from Firebase Storage! */}
           <img 
             src={target.imageUrl || 'https://via.placeholder.com/140'} 
             alt={target.name}
-            style={{ 
-              width: '140px', 
-              height: '140px', 
-              borderRadius: '50%', 
-              objectFit: 'cover', 
-              border: '4px solid white',
-              margin: '15px 0',
-              backgroundColor: '#333'
-            }} 
+            className="player-target-photo"
           />
 
-          <h1 style={{ fontSize: '2.5rem', margin: '5px 0', color: '#fff' }}>
-            🎯 {target.name}
-          </h1>
-          <p style={{ fontSize: '0.9rem', color: '#ffcccc' }}>
-            Spike their drink without getting caught!
-          </p>
-        </div>
+          <h2>{target.name}</h2>
+          <p>Spike their drink without getting caught.</p>
+        </section>
       )}
+      </div>
     </div>
   );
 }

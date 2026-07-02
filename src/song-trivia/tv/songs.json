@@ -1,27 +1,64 @@
 {
-    "Rock": [
-      { "id": 1, "title": "Bohemian Rhapsody", "artist": "Queen" },
-      { "id": 2, "title": "Back In Black", "artist": "AC/DC" },
-      { "id": 3, "title": "Hotel California", "artist": "Eagles" }
-    ],
-    "RnB": [
-      { "id": 4, "title": "No Scrubs", "artist": "TLC" },
-      { "id": 5, "title": "Blinding Lights", "artist": "The Weeknd" },
-      { "id": 6, "title": "Yeah!", "artist": "Usher" }
-    ],
-    "Pop": [
-      { "id": 7, "title": "Bad Romance", "artist": "Lady Gaga" },
-      { "id": 8, "title": "As It Was", "artist": "Harry Styles" },
-      { "id": 9, "title": "Shape of You", "artist": "Ed Sheeran" }
-    ],
-    "Soul": [
-      { "id": 10, "title": "Respect", "artist": "Aretha Franklin" },
-      { "id": 11, "title": "What's Going On", "artist": "Marvin Gaye" },
-      { "id": 12, "title": "Superstition", "artist": "Stevie Wonder" }
-    ],
-    "Blues": [
-      { "id": 13, "title": "The Thrill Is Gone", "artist": "B.B. King" },
-      { "id": 14, "title": "Cross Road Blues", "artist": "Robert Johnson" },
-      { "id": 15, "title": "Texas Flood", "artist": "Stevie Ray Vaughan" }
-    ]
-  }
+  "Super Bowl Hits": [
+    { "id": 1, "title": "Run the World (Girls)", "artist": "Beyonce" },
+    { "id": 2, "title": "Bitch Better Have My Money", "artist": "Rihanna" },
+    { "id": 3, "title": "Not Like Us", "artist": "Kendrick Lamar" },
+    { "id": 4, "title": "Treasure", "artist": "Bruno Mars" },
+    { "id": 5, "title": "NUEVAYoL", "artist": "Bad Bunny" },
+    { "id": 6, "title": "Just Dance", "artist": "Lady Gaga and Colby O'Donis" },
+    { "id": 7, "title": "The Hills", "artist": "The Weeknd" },
+    { "id": 8, "title": "Mirrors", "artist": "Justin Timberlake" }
+  ],
+  "Disney Channel Classics": [
+    { "id": 9, "title": "The Best of Both Worlds", "artist": "Hannah Montana" },
+    { "id": 10, "title": "Play My Music", "artist": "Camp Rock" },
+    { "id": 11, "title": "You Are the Music in Me", "artist": "High School Musical" },
+    { "id": 12, "title": "Year 3000", "artist": "Jonas Brothers" },
+    { "id": 13, "title": "Determinate", "artist": "Lemonade Mouth" },
+    { "id": 14, "title": "Everything Is Not As It Seems", "artist": "Wizards of Waverly Place" },
+    { "id": 15, "title": "Make it Shine", "artist": "Victorious" },
+    { "id": 16, "title": "Leave It All To Me", "artist": "iCarly" }
+  ],
+  "Oldies": [
+    { "id": 17, "title": "A Sunday Kind Of Love", "artist": "Etta James" },
+    { "id": 18, "title": "Here Comes the Sun", "artist": "The Beatles" },
+    { "id": 19, "title": "Respect", "artist": "Aretha Franklin" },
+    { "id": 20, "title": "Doo Wop (That Thing)", "artist": "Lauryn Hill" },
+    { "id": 21, "title": "Jolene", "artist": "Dolly Parton" },
+    { "id": 22, "title": "Isn't She Lovely", "artist": "Stevie Wonder" },
+    { "id": 23, "title": "Dancing Queen", "artist": "ABBA" },
+    { "id": 24, "title": "Don't Stop Believing", "artist": "Journey" }
+  ],
+  "Pop Divas": [
+    { "id": 25, "title": "HOT TO GO!", "artist": "Chappell Roan" },
+    { "id": 26, "title": "Tummy Hurts", "artist": "Reneé Rapp" },
+    { "id": 27, "title": "Von dutch", "artist": "Charli xcx" },
+    { "id": 28, "title": "Please Please Please", "artist": "Sabrina Carpenter" },
+    { "id": 29, "title": "drivers license", "artist": "Olivia Rodrigo" },
+    { "id": 30, "title": "Sports car", "artist": "Tate McRae" },
+    { "id": 31, "title": "Break Free", "artist": "Ariana Grande" },
+    { "id": 32, "title": "Stateside + Zara Larsson", "artist": "PinkPantheress and Zara Larsson" }
+  ],
+"2000s/2010s": [
+    { "id": 33, "title": "Beauty and the Beat", "artist": "Justin Bieber and Nicki Minaj" },
+    { "id": 34, "title": "Toxic", "artist": "Britney Spears" },
+    { "id": 35, "title": "Umbrella", "artist": "Rihanna and Jay Z" },
+    { "id": 36, "title": "One Dance", "artist": "Drake" },
+    { "id": 37, "title": "TikTok", "artist": "Kesha" },
+    { "id": 38, "title": "Bad Romance", "artist": "Lady Gaga" },
+    { "id": 39, "title": "California Gurls", "artist": "Katy Perry and Snoop Dogg" },
+    { "id": 40, "title": "Love Story", "artist": "Taylor Swift" },
+    { "id": 41, "title": "Payphone", "artist": "Maroon 5 and Wiz Khalifa" },
+    { "id": 42, "title": "Hey There Delilah", "artist": "Plain White T's" }
+  ],
+  "Rap": [
+    { "id": 43, "title": "Runaway", "artist": "Kanye West" },
+    { "id": 44, "title": "Black and Yellow", "artist": "Wiz Khalifa" },
+    { "id": 45, "title": "E85", "artist": "Don Toliver" },
+    { "id": 46, "title": "Dracula", "artist": "Tame Impala" },
+    { "id": 47, "title": "HUMBLE.", "artist": "Kendrick Lamar" },
+    { "id": 48, "title": "Stir Fry", "artist": "Migos" },
+    { "id": 49, "title": "goosebumps", "artist": "Travis Scott" },
+    { "id": 50, "title": "Mobamba", "artist": "Sheck Wes" }
+  ]
+}

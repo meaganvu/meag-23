@@ -14,6 +14,7 @@ function TVTriviaGame({ onNavigate }) {
   const [showGuesses, setShowGuesses] = useState(false); // Controls when guesses are visible
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameOverStep, setGameOverStep] = useState('intro'); // 'intro' or 'results'
+  const [showRoundIntro, setShowRoundIntro] = useState(true); // Tracks round transitions
 
   // Team Scores State
   const [teams, setTeams] = useState([]);
@@ -64,6 +65,7 @@ function TVTriviaGame({ onNavigate }) {
     setShowGuesses(false);
     setIsGameOver(false);
     setGameOverStep('intro');
+    setShowRoundIntro(true); // Reset to show the first round's title banner
   };
 
   const handleNext = () => {
@@ -80,6 +82,7 @@ function TVTriviaGame({ onNavigate }) {
         setSongIndex(0);
         setShowAnswer(false);
         setShowGuesses(false);
+        setShowRoundIntro(true); // Triggers the next round introduction splash
       } else {
         setIsGameOver(true);
       }
@@ -202,7 +205,37 @@ function TVTriviaGame({ onNavigate }) {
               </div>
             )}
           </div>
+        ) : showRoundIntro ? (
+          /* INTERMEDIARY MODE: ROUND TOPIC INTRO BANNER SCREEN */
+          <div style={styles.roundIntroWrapper}>
+            <div style={styles.pulseIconContainerRound}>
+              <span style={styles.musicIcon}>📺</span>
+            </div>
+            <div style={styles.roundIntroLabel}>NEXT ROUND TOPIC</div>
+            <h1 style={styles.roundIntroTitle}>{currentCategory}</h1>
+            <p style={styles.guessingSubtitle}>Get your thinking caps ready! Locking down answers in a moment...</p>
+
+            <div style={{ ...styles.buttonGroup, marginTop: '40px' }}>
+              <button 
+                onClick={() => setShowRoundIntro(false)} 
+                style={styles.primaryBtn}
+                onMouseEnter={(e) => triggerHover(e, 'linear-gradient(90deg, #818cf8, #6366f1)', 'rgba(129, 140, 248, 0.4)')}
+                onMouseLeave={(e) => removeHover(e, 'linear-gradient(90deg, #6366f1, #3b82f6)', '0 4px 14px rgba(129, 140, 248, 0.3)')}
+              >
+                Start Round 🚀
+              </button>
+              <button 
+                onClick={onNavigate} 
+                style={styles.secondaryBtn}
+                onMouseEnter={(e) => triggerHover(e, null, 'rgba(148, 163, 184, 0.2)')}
+                onMouseLeave={(e) => removeHover(e, null, 'none')}
+              >
+                Exit 🏠
+              </button>
+            </div>
+          </div>
         ) : (
+          /* ACTIVE ACTIVE GAMEPLAY LOOP SCREEN */
           <div>
             {/* CATEGORY HEADER */}
             <div style={styles.categoryBadgeContainer}>
@@ -326,7 +359,6 @@ function TVTriviaGame({ onNavigate }) {
       </div>
 
       {/* GAMING STYLE SCOREBOARD FOOTER */}
-      {/* Hidden during final results view to ensure full layout emphasis on the main card ranks */}
       {(!isGameOver || gameOverStep === 'intro') && (
         <div style={styles.scoreboardFooter}>
           <h3 style={styles.scoreboardTitle}>🏆 Leaderboard 🏆</h3>
@@ -341,7 +373,7 @@ function TVTriviaGame({ onNavigate }) {
 
                 let placementIcon = '🏅';
                 let badgeColor = 'rgba(51, 65, 85, 0.5)';
-                let borderColor = 'rgba(255, 255, 255, 0.08)';
+                let borderColor = 'rgba(255, 255, 255, 0.05)';
 
                 if (isFirst) {
                   placementIcon = '🥇';
@@ -412,7 +444,48 @@ const styles = {
     maxWidth: '1100px',
     width: '100%',
     margin: '0 auto 40px auto',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  roundIntroWrapper: {
+    textAlign: 'center',
+    padding: '40px 0',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  roundIntroLabel: {
+    fontSize: '1.1rem',
+    fontWeight: '900',
+    color: '#fbbf24',
+    letterSpacing: '5px',
+    textTransform: 'uppercase',
+    marginBottom: '15px'
+  },
+  roundIntroTitle: {
+    fontSize: '4rem',
+    fontWeight: '900',
+    margin: '0 0 20px 0',
+    background: 'linear-gradient(45deg, #38bdf8, #a855f7, #ec4899)', 
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    letterSpacing: '2px',
+    lineHeight: '1.2'
+  },
+  pulseIconContainerRound: {
+    width: '120px',
+    height: '120px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(236, 72, 153, 0.1)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '30px',
+    border: '2px solid rgba(236, 72, 153, 0.3)',
+    boxShadow: '0 0 30px rgba(236, 72, 153, 0.2)'
   },
   gameOverWrapper: {
     textAlign: 'center',
